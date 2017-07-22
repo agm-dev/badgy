@@ -1,6 +1,7 @@
 /*
   This is a file of data and helper functions that we can expose and use in our templating function
 */
+const fs = require('fs')
 
 // Moment.js is a handy library for displaying dates:
 exports.moment = require('moment')
@@ -15,6 +16,7 @@ exports.icon = (name) => fs.readFileSync(`./public/images/icons/${name}.svg`)
 exports.siteName = `Badgy`
 
 exports.menu = [
-  { slug: '/achievements', title: 'Achievements', icon: 'achievement' },
+  { slug: '/achievements', title: 'achievements', icon: 'achievement' },
+  { slug: '/achievements/add', title: 'add achievement', icon: 'achievement' },
   { slug: '/settings', title: 'settings', icon: 'setting' }
 ]
