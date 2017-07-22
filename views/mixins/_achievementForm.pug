@@ -1,0 +1,20 @@
+mixin achievementForm(achievement = {})
+  form(action=`/achievements/${achievement._id || 'add'}` method="POST" class="card" enctype="multipart/form-data")
+    label(for="name") Name
+    input(type="text" name="name" value=achievement.name)
+    label(for="description") Description
+    textarea(name="description") #{achievement.description}
+    label(for="points") Points
+    input(type="number" name="points" value=achievement.points)
+    label(for="image") Image
+    input(type="file" name="image" id="form-image" accept="image/gif, image/png, image/jpeg")
+    if achievement.image
+      img(src=`/uploads/${achievement.image}` alt=achievement.name width=200)
+    - const choices = ['development', 'qa', 'pm', 'sales']
+    - const tags = achievement.tags || []
+    ul.tags
+      each choice in choices
+        .tag.tag__choice
+          input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
+          label(for=choice)= choice
+    input(type="submit" value="Save" class="button")

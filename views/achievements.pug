@@ -1,0 +1,22 @@
+extends layout
+
+include mixins/_achievementCard
+
+block content
+  .inner
+  h2= title
+  .achievements
+    table
+      thead
+        tr
+          td Id
+          td Name
+          td Description
+          td Points
+          td Image
+          td Tags
+          td Update
+          td Created
+      tbody
+        each achievement in achievements
+          +achievementCard(achievement)

@@ -1,0 +1,8 @@
+extends layout
+
+include mixins/_achievementForm
+
+block content
+  .inner
+    h2= title
+    +achievementForm(achievement)

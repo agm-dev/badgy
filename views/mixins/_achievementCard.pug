@@ -1,0 +1,17 @@
+mixin achievementCard(achievement = {})
+  .achievement
+    tr
+      td
+        a(href=`/achievements/${achievement.slug}`) #{achievement._id}
+      td= achievement.name
+      td= achievement.description
+      td= achievement.points
+      td
+        if achievement.image
+          img(src=`/uploads/${achievement.image}` alt=achievement.name width="200")
+      td
+        if achievement.tags
+          each tag in achievement.tags
+            span= tag
+      td= achievement.updated
+      td= achievement.created
