@@ -53,7 +53,7 @@ exports.resize = async (req, res, next) => {
 exports.createAchievement = async (req, res) => {
   const achievement = await (new Achievement(req.body)).save()
   req.flash('success', `Successfully created ${achievement.name}.`)
-  res.redirect(`/achievement/${achievement.slug}`)
+  res.redirect(`/achievements/${achievement.slug}`)
 }
 
 exports.updateAchievement = async (req, res) => {
