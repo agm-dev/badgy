@@ -8,15 +8,21 @@ html
   body
     .container-fluid(style="margin-top:20px")
       block header
-        .row
-          .nav
-            each item in h.menu
-              .col-xs-12.col-md-2
-                a.btn.btn-default(href=item.slug) #{item.title}
-            if user && user.gravatar
-              .col-xs-12-col-md-2
-                img(src=`${user.gravatar}` alt="profile-picture" width="50")
-        
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-header
+              button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false")
+
+            .collapse.navbar-collapse(id="navbar-collapse-1")
+              ul.nav.navbar-nav
+                each item in h.menu
+                  li
+                    a(href=item.slug)
+                      span #{item.title}
+              ul.nav.navbar-nav.navbar-right
+                if user && user.gravatar
+                  img(src=`${user.gravatar}` alt="profile-picture" width="50")
+
       block messages
         if locals.flashes
           .row
@@ -25,8 +31,8 @@ html
               each category in categories
                 each message in flashes[category]
                   .flash.col-xs-12.col-md-6
-                    p.flash__text!= message
-                    button.flash__remove(onClick="this.parentElement.remove()") &times;
+                    .alert.alert-info(onClick="this.remove()")
+                      p.flash__text!= message
       .content.row
         block content
 
