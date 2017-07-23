@@ -39,3 +39,23 @@ exports.register = async (req, res, next) => {
   await register(user, req.body.password); // the plugin will hash the password by itself
   next(); // pass to authController.login
 };
+
+exports.account = (req, res) => {
+  res.render('account', { title: 'Account Settings' });
+};
+
+exports.updateAccount = async (req, res) => {
+  const updates = {
+    name: req.body.name,
+    email: req.body.email,
+    description: req.body.description
+  };
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $set: updates },
+    { new: true, runValidators: true, context: 'query' }
+  );
+  req.flash('success', 'Your profile has been updated.');
+  res.redirect('back');
+};

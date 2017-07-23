@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .inner.col-xs-12.col-md-6
+    h2 Account Settings
+    form(action="/account" method="POST")
+      .form-group
+        label(for="name") Name
+        input.form-control(type="text" name="name" value=user.name)
+      .form-group
+        label(for="email") Email Address
+        input.form-control(type="email" name="email" value=user.email)
+      .form-group
+        label(for="description") Description
+        textarea.form-control(name="description") #{user.description}
+      .form-group
+        input.btn.btn-primary(type="submit" value="Save Settings")
