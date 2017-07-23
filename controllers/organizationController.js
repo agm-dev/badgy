@@ -74,10 +74,12 @@ exports.addUser = async (req, res) => {
   if (!organization) {
     req.flash('error', `You cannot join into that organization`)
     res.redirect('/')
+    return
   }
   if (organization.users.some( user => user._id.equals(req.user._id))) { // If that user is already on the organization, flash it:
     req.flash('error', `You are already included in ${organization.name}.`)
     res.redirect('/')
+    return
   }
   organization.users.push(req.user._id)
   await organization.save()
