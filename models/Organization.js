@@ -16,6 +16,7 @@ const organizationSchema = new mongoose.Schema({
     lowercase: true,
     required: 'Please enter a description for the organization'
   },
+  administrator: { type: mongoose.Schema.ObjectId, ref: 'User' },
   image: {
     type: String,
     trim: true
@@ -65,6 +66,7 @@ organizationSchema.pre('save', async function (next) {
 })
 
 function autopopulate(next) {
+  this.populate('administrator')
   this.populate('achievements')
   this.populate('users')
   next()

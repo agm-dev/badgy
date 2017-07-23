@@ -5,6 +5,8 @@ mixin organizationCard(organization = {})
         a(href=`/organizations/${organization.slug}`) #{organization._id}
       td= organization.name
       td= organization.description
+      - const admin = (organization.administrator && organization.administrator.name) ? organization.administrator.name : ''
+      td= admin
       td
         if organization.image
           img(src=`/uploads/${organization.image}` alt=organization.name width="200")

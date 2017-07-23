@@ -47,18 +47,23 @@ exports.resize = async (req, res, next) => {
 }
 
 exports.createOrganization = async (req, res) => {
-  const organization = await (new Organization(req.body)).save()
+  const organization = new Organization(req.body)
+  organization.administrator = req.user._id
+  await organization.save()
   req.flash('success', `Successfully created ${organization.name}.`)
   res.redirect(`/organizations/${organization.slug}`)
 }
 
-/*
-exports.updateAchievement = async (req, res) => {
-  const achievement = await Achievement.findOneAndUpdate({ _id: req.params.id }, req.body, {
+exports.updateOrganization = async (req, res) => {
+  let organization = await Organization.findOne({ _id: req.params.id })
+  if (!organization.administrator || !organization.administrator._id.equals(req.user._id)) {
+    req.flash('error', `Only administrator can update the organization.`)
+    res.redirect(`/organizations`)
+  }
+  organization = await Organization.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true, // return the new object instead of the old one
     runValidators: true
   }).exec()
-  req.flash('success', `Successfully updated <strong>${achievement.name}</strong>. <a href="/achievements/${achievement.slug}">View Achievement</a>`)
-  res.redirect(`/achievements/${achievement.slug}`)
+  req.flash('success', `Successfully updated <strong>${organization.name}</strong>. <a href="/organizations/${organization.slug}">View Organization</a>`)
+  res.redirect(`/organizations/${organization.slug}`)
 }
-*/

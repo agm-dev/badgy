@@ -55,7 +55,12 @@ router.post('/organizations/add',
   catchErrors(organizationController.createOrganization)
 )
 router.get('/organizations/:slug', catchErrors(organizationController.getOrganizationBySlug))
-router.post('/organizations/:id')
+router.post('/organizations/:id',
+  authController.isLoggedIn,
+  organizationController.upload,
+  catchErrors(organizationController.resize),
+  catchErrors(organizationController.updateOrganization)
+)
 
 // Groups stuff:
 /*
