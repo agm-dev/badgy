@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const achievementController = require('../controllers/achievementController')
-const userController = require('../controllers/userController')
+//const userController = require('../controllers/userController')
 const { catchErrors } = require('../handlers/errorHandlers')
 
 // Route handling time!
