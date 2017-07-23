@@ -1,0 +1,22 @@
+mixin organizationForm(organization = {})
+  form(action=`/organizations/${organization._id || 'add'}` method="POST" class="card" enctype="multipart/form-data")
+    .form-group
+      label(for="name") Name
+      input.form-control(type="text" name="name" value=organization.name)
+    .form-group
+      label(for="description") Description
+      textarea.form-control(name="description") #{organization.description}
+    .form-group
+      label(for="image") Image
+      input.form-control(type="file" name="image" id="form-image" accept="image/gif, image/png, image/jpeg")
+      if organization.image
+        img(src=`/uploads/${organization.image}` alt=organization.name width=200)
+    if organization.achievements || organization.users
+      .form-group
+        h4 Achievements
+        //- TODO: list here the achievements of that organization and javascript form to add new ones
+      .form-group
+        h4 Users
+        //- TODO: list here users of that organization
+    .form-group
+      input.btn.btn-primary(type="submit" value="Save" class="button")

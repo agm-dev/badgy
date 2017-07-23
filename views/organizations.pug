@@ -1,0 +1,24 @@
+extends layout
+
+include mixins/_organizationCard
+
+block content
+  .inner.col-xs-12.col-md-6
+    h2= title
+    if (organizations.length)
+      table.table.table-striped.table-bordered
+        thead
+          tr
+            td Id
+            td Name
+            td Description
+            td Image
+            td Achievements
+            td Users
+            td Update
+            td Created
+        tbody
+          each organization in organizations
+            +organizationCard(organization)
+    else
+      p There is no organizations.

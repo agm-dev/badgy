@@ -3,6 +3,7 @@ const router = express.Router()
 const achievementController = require('../controllers/achievementController')
 const userController = require('../controllers/userController')
 const authController = require('../controllers/authController')
+const organizationController = require('../controllers/organizationController')
 const { catchErrors } = require('../handlers/errorHandlers')
 
 // Route handling time!
@@ -45,13 +46,16 @@ router.post('/login', authController.login)
 router.get('/logout', authController.logout)
 
 // Organizations stuff:
-/*
-router.get('/organizations')
-router.get('/organizations/add')
-router.post('/organizations/add')
-router.get('/organizations/:slug')
+router.get('/organizations', catchErrors(organizationController.getOrganizations))
+router.get('/organizations/add', authController.isLoggedIn, organizationController.addOrganization)
+router.post('/organizations/add',
+  authController.isLoggedIn,
+  organizationController.upload, // TODO: refactor this functions and move them to helpers or handlers
+  catchErrors(organizationController.resize),
+  catchErrors(organizationController.createOrganization)
+)
+router.get('/organizations/:slug', catchErrors(organizationController.getOrganizationBySlug))
 router.post('/organizations/:id')
-*/
 
 // Groups stuff:
 /*

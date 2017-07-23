@@ -1,0 +1,22 @@
+mixin organizationCard(organization = {})
+  .organization
+    tr
+      td
+        a(href=`/organizations/${organization.slug}`) #{organization._id}
+      td= organization.name
+      td= organization.description
+      td
+        if organization.image
+          img(src=`/uploads/${organization.image}` alt=organization.name width="200")
+      td
+        if organization.achievements && organization.achievements.length
+          each achievement in organization.achievements
+            span= achievement.name
+            br
+      td
+        if organization.users && organization.users.length
+          each user in organization.users
+            span= user.name
+            br
+      td= organization.updated
+      td= organization.created

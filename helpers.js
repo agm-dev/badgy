@@ -18,6 +18,10 @@ exports.siteName = `Badgy`
 exports.menu = [
   { slug: '/achievements', title: 'achievements', icon: 'achievement' },
   { slug: '/achievements/add', title: 'add achievement', icon: 'achievement' },
+  { slug: '/organizations', title: 'organizations', icon: 'organizations' },
+  { slug: '/organizations/add', title: 'add organization', icon: 'organizations' },
+  { slug: '/groups', title: 'groups', icon: 'groups' },
+  { slug: '/groups/add', title: 'add group', icon: 'groups' },
   { slug: '/register', title: 'register', icon: 'register' },
   { slug: '/account', title: 'account', icon: 'account' },
   { slug: '/login', title: 'login', icon: 'login' },
