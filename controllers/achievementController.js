@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Achievement = mongoose.model('Achievement') // We don't need to import the Achievement model again because we did it on start file, and mongoose just need to 'load' the models once.
+const Organization = mongoose.model('Organization')
 const multer = require('multer') // npm package to manage uploads.
 const jimp = require('jimp') // npm package to modify images.
 const uuid = require('uuid') // npm package to get unique ids (for image names).
@@ -52,6 +53,14 @@ exports.resize = async (req, res, next) => {
 
 exports.createAchievement = async (req, res) => {
   const achievement = await (new Achievement(req.body)).save()
+  if (req.body.organizations && req.body.organizations.length) {
+    // Add the achievement to the organization:
+    const organization = await Organization.findOne({ _id: req.body.organizations[0] })
+    if (!organization.achievements.some(a => a._id.equals(achievement._id))) {
+      organization.achievements.push(achievement._id)
+      await organization.save()
+    }
+  }
   req.flash('success', `Successfully created ${achievement.name}.`)
   res.redirect(`/achievements/${achievement.slug}`)
 }

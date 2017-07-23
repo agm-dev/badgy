@@ -50,4 +50,12 @@ userSchema.virtual('gravatar').get(function() {
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
 userSchema.plugin(mongodbErrorHandler);
 
+function autopopulate(next) {
+  this.populate('organizations')
+  this.populate('achievements')
+  next()
+}
+
+userSchema.pre('findOne', autopopulate);
+
 module.exports = mongoose.model('User', userSchema);
