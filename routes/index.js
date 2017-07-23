@@ -10,14 +10,16 @@ const { catchErrors } = require('../handlers/errorHandlers')
 // Achievements stuff:
 router.get('/', achievementController.homePage)
 router.get('/achievements', catchErrors(achievementController.getAchievements))
-router.get('/achievements/add', achievementController.addAchievement)
+router.get('/achievements/add', authController.isLoggedIn, achievementController.addAchievement)
 router.post('/achievements/add',
+  authController.isLoggedIn,
   achievementController.upload,
   catchErrors(achievementController.resize),
   catchErrors(achievementController.createAchievement)
 )
 router.get('/achievements/:slug', catchErrors(achievementController.getAchievementBySlug))
 router.post('/achievements/:id',
+  authController.isLoggedIn,
   achievementController.upload,
   catchErrors(achievementController.resize),
   catchErrors(achievementController.updateAchievement)
