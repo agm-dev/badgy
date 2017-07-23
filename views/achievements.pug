@@ -3,10 +3,9 @@ extends layout
 include mixins/_achievementCard
 
 block content
-  .inner
-  h2= title
-  .achievements
-    table
+  .inner.col-xs-12.col-md-12
+    h2= title
+    table.table.table-striped.table-bordered
       thead
         tr
           td Id

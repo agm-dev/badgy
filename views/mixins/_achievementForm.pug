@@ -1,20 +1,23 @@
 mixin achievementForm(achievement = {})
   form(action=`/achievements/${achievement._id || 'add'}` method="POST" class="card" enctype="multipart/form-data")
-    label(for="name") Name
-    input(type="text" name="name" value=achievement.name)
-    label(for="description") Description
-    textarea(name="description") #{achievement.description}
-    label(for="points") Points
-    input(type="number" name="points" value=achievement.points)
-    label(for="image") Image
-    input(type="file" name="image" id="form-image" accept="image/gif, image/png, image/jpeg")
+    .form-group
+      label(for="name") Name
+      input.form-control(type="text" name="name" value=achievement.name)
+    .form-group
+      label(for="description") Description
+      textarea.form-control(name="description") #{achievement.description}
+    .form-group
+      label(for="points") Points
+      input.form-control(type="number" name="points" value=achievement.points)
+    .form-group
+      label(for="image") Image
+      input.form-control(type="file" name="image" id="form-image" accept="image/gif, image/png, image/jpeg")
     if achievement.image
       img(src=`/uploads/${achievement.image}` alt=achievement.name width=200)
     - const choices = ['development', 'qa', 'pm', 'sales']
     - const tags = achievement.tags || []
-    ul.tags
+    .form-group
       each choice in choices
-        .tag.tag__choice
-          input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
-          label(for=choice)= choice
-    input(type="submit" value="Save" class="button")
+        label(for=choice)= choice
+        input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
+    input.btn.btn-primary(type="submit" value="Save" class="button")
