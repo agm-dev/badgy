@@ -20,7 +20,7 @@ mixin achievementForm(achievement = {})
       each choice in choices
         label(for=choice)= choice
         input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
-    if user.organizations.length
+    if user.organizations.length && !achievement._id
       label(for=specific) Specific to one organization
       input(type="checkbox" onChange="if(this.checked){document.getElementById('organization-specific').disabled=false;}else{document.getElementById('organization-specific').disabled=true;}")
       fieldset(disabled id="organization-specific")

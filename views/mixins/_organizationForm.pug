@@ -18,11 +18,11 @@ mixin organizationForm(organization = {})
     if organization.achievements || organization.users
       .form-group
         h4 Achievements
-          each achievement in organization.achievements
-            a.btn.btn-default(href="#") #{achievement.name}
-              span.badge #{achievement.points}
-          if (!organization.achievements.length)
-            p There is no achievements directly related to this organization.
+        each achievement in organization.achievements
+          a.btn.btn-default(href="#") #{achievement.name}
+            span.badge #{achievement.points}
+        if (!organization.achievements.length)
+          p There is no achievements directly related to this organization.
       .form-group
         h4 Users
         each user in organization.users
