@@ -18,9 +18,14 @@ mixin organizationForm(organization = {})
     if organization.achievements || organization.users
       .form-group
         h4 Achievements
-        //- TODO: list here the achievements of that organization and javascript form to add new ones
+          each achievement in organization.achievements
+            a.btn.btn-default(href="#") #{achievement.name}
+              span.badge #{achievement.points}
+          if (!organization.achievements.length)
+            p There is no achievements directly related to this organization.
       .form-group
         h4 Users
-        //- TODO: list here users of that organization
+        each user in organization.users
+          a.btn.btn-default(href="#") #{user.name}
     .form-group
       input.btn.btn-primary(type="submit" value="Save" class="button")
