@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const achievementController = require('../controllers/achievementController')
-//const userController = require('../controllers/userController')
+const userController = require('../controllers/userController')
+const authController = require('../controllers/authController')
 const { catchErrors } = require('../handlers/errorHandlers')
 
 // Route handling time!
@@ -23,18 +24,23 @@ router.post('/achievements/:id',
 )
 
 // Users stuff:
-/*
-router.get('/account')
-router.post('/account')
-router.post('/account/forgot')
-router.get('/account/reset/:token')
-router.post('/account/reset/:token')
-router.get('/register')
-router.post('/register')
-router.get('/login')
-router.post('/login')
-router.get('/logout')
-*/
+//router.get('/account')
+//router.post('/account')
+router.post('/account/forgot', catchErrors(authController.forgot))
+router.get('/account/reset/:token', catchErrors(authController.reset))
+router.post('/account/reset/:token',
+  authController.confirmedPasswords,
+  catchErrors(authController.update)
+)
+router.get('/register', userController.registerForm)
+router.post('/register',
+  userController.validateRegister,
+  catchErrors(userController.register),
+  authController.login
+)
+router.get('/login', userController.loginForm)
+router.post('/login', authController.login)
+router.get('/logout', authController.logout)
 
 // Organizations stuff:
 /*

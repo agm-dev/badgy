@@ -13,6 +13,9 @@ html
             each item in h.menu
               .col-xs-12.col-md-2
                 a.btn.btn-default(href=item.slug) #{item.title}
+            if user && user.gravatar
+              .col-xs-12-col-md-2
+                img(src=`${user.gravatar}` alt="profile-picture" width="50")
         
       block messages
         if locals.flashes
