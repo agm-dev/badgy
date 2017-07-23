@@ -24,7 +24,8 @@ exports.getOrganizations = async (req, res) => {
 exports.getOrganizationBySlug = async (req, res, next) => {
   const organization = await Organization.findOne({ slug: req.params.slug })
   if (!organization) return next()
-  res.render('editOrganization', { title: 'Edit Organization', organization })
+  const joinUrl = `http://${req.headers.host}/organizations/join/${organization.joinToken}`;
+  res.render('editOrganization', { title: 'Edit Organization', organization, joinUrl })
 }
 
 exports.addOrganization = (req, res) => {
@@ -66,4 +67,20 @@ exports.updateOrganization = async (req, res) => {
   }).exec()
   req.flash('success', `Successfully updated <strong>${organization.name}</strong>. <a href="/organizations/${organization.slug}">View Organization</a>`)
   res.redirect(`/organizations/${organization.slug}`)
+}
+
+exports.addUser = async (req, res) => {
+  const organization = await Organization.findOne({ joinToken: req.params.token })
+  if (!organization) {
+    req.flash('error', `You cannot join into that organization`)
+    res.redirect('/')
+  }
+  if (organization.users.some( user => user._id.equals(req.user._id))) { // If that user is already on the organization, flash it:
+    req.flash('error', `You are already included in ${organization.name}.`)
+    res.redirect('/')
+  }
+  organization.users.push(req.user._id)
+  await organization.save()
+  req.flash('success', `You have joined ${organization.name}.`)
+  res.redirect('/')
 }

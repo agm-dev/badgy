@@ -6,6 +6,10 @@ mixin organizationForm(organization = {})
     .form-group
       label(for="description") Description
       textarea.form-control(name="description") #{organization.description}
+    if joinUrl
+      .form-group
+        label Joining url (use this url to invite your users to join this awesome organization)
+        a(href=joinUrl)= joinUrl
     .form-group
       label(for="image") Image
       input.form-control(type="file" name="image" id="form-image" accept="image/gif, image/png, image/jpeg")

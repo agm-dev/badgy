@@ -20,6 +20,7 @@ const organizationSchema = new mongoose.Schema({
   administrator: { type: mongoose.Schema.ObjectId, ref: 'User' },
   joinToken: {
     type: String,
+    unique: true,
     default: crypto.randomBytes(20).toString('hex')
   },
   image: {
@@ -52,7 +53,8 @@ const organizationSchema = new mongoose.Schema({
 organizationSchema.index({
   name: 'text',
   description: 'text',
-  slug: 'text'
+  slug: 'text',
+  joinToken: 'text'
 })
 
 organizationSchema.pre('save', async function (next) {

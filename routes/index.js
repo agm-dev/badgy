@@ -61,6 +61,10 @@ router.post('/organizations/:id',
   catchErrors(organizationController.resize),
   catchErrors(organizationController.updateOrganization)
 )
+router.get('/organizations/join/:token',
+  authController.isLoggedIn,
+  catchErrors(organizationController.addUser)
+)
 
 // Groups stuff:
 /*
