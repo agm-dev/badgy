@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise // This links mongoose Promise with the node built in Promise.
 const slug = require('slugs') // Allow to make url friendly names for us
+const crypto = require('crypto')
 
 const organizationSchema = new mongoose.Schema({
   name: {
@@ -17,6 +18,10 @@ const organizationSchema = new mongoose.Schema({
     required: 'Please enter a description for the organization'
   },
   administrator: { type: mongoose.Schema.ObjectId, ref: 'User' },
+  joinToken: {
+    type: String,
+    default: crypto.randomBytes(20).toString('hex')
+  },
   image: {
     type: String,
     trim: true

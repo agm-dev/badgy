@@ -5,7 +5,7 @@ include mixins/_organizationForm
 block content
   .inner.col-xs-12.col-md-6
     h2= title
-    if organization.administrator && organization.administrator._id.equals(user._id)
+    if !organization || (organization.administrator && organization.administrator._id.equals(user._id))
       +organizationForm(organization)
     else
       p You only can view and edit the organizations where you are the administrator.
