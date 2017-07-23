@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Organization = mongoose.model('Organization')
+const User = mongoose.model('User')
 const multer = require('multer') // npm package to manage uploads.
 const jimp = require('jimp') // npm package to modify images.
 const uuid = require('uuid') // npm package to get unique ids (for image names).
@@ -52,6 +53,12 @@ exports.createOrganization = async (req, res) => {
   organization.administrator = req.user._id
   organization.users.push(req.user._id) // users that creates an organization join in it automatically
   await organization.save()
+  // Find that user and search for the organization id in their organizations
+  const user = await User.findOne({ _id: req.user._id }) // FIX: better do this filter in the query
+  if (!user.organizations.some(o => o._id.equals(organization._id))) { // If not included, include it
+    user.organizations.push(organization._id)
+    await user.save()
+  }
   req.flash('success', `Successfully created ${organization.name}.`)
   res.redirect(`/organizations/${organization.slug}`)
 }
@@ -84,6 +91,12 @@ exports.addUser = async (req, res) => {
   }
   organization.users.push(req.user._id)
   await organization.save()
+  // Find that user and search for the organization id in their organizations
+  const user = await User.findOne({ _id: req.user._id }) // FIX: better do this filter in the query
+  if (!user.organizations.some(o => o._id.equals(organization._id))) { // If not included, include it
+    user.organizations.push(organization._id)
+    await user.save()
+  }
   req.flash('success', `You have joined ${organization.name}.`)
   res.redirect('/')
 }
