@@ -50,6 +50,7 @@ exports.resize = async (req, res, next) => {
 exports.createOrganization = async (req, res) => {
   const organization = new Organization(req.body)
   organization.administrator = req.user._id
+  organization.users.push(req.user._id) // users that creates an organization join in it automatically
   await organization.save()
   req.flash('success', `Successfully created ${organization.name}.`)
   res.redirect(`/organizations/${organization.slug}`)
