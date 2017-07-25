@@ -54,7 +54,7 @@ router.post('/organizations/add',
   catchErrors(organizationController.resize),
   catchErrors(organizationController.createOrganization)
 )
-router.get('/organizations/:slug', catchErrors(organizationController.getOrganizationBySlug))
+router.get('/organizations/:slug', authController.isLoggedIn, catchErrors(organizationController.getOrganizationBySlug))
 router.post('/organizations/:id',
   authController.isLoggedIn,
   organizationController.upload,
