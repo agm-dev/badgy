@@ -1,21 +1,39 @@
 // requires
 const logger = require('./utils/logger')
-// const User = require('./resources/users/User')
-const { catchErrors } = require('./utils/errorHandlers')
-const populate = require('./utils/prepare-database')
+const express = require('express')
+const bodyParser = require('body-parser')
+const errorHandlers = require('./utils/errorHandlers')
+const catchErrors = errorHandlers.catchErrors
+const userController = require('./resources/users/userController')
+require('dotenv').config()
 
-const main = async () => {
-  await populate()
-  /*
-  const test = new User({ name: 'test', email: 'test@test.com', hash: '12232432', activation_token: 'asdfdsafadsf' })
-  await test.save()
-  */
-  logger.info(`[index.js] ended script`)
-  process.exit(1)
+// Router set up:
+const router = express.Router()
+// TODO: this route must server the static react app compiled:
+router.get('/', (req, res) => {
+  res.send(process.env.APP_NAME || 'badgy')
+})
+const apiVersion = process.env.API_VERSION || 'v1'
+const apiPath = `/api/${apiVersion}`
+
+// User routes:
+router.post(`${apiPath}/user`, catchErrors(userController.createUser))
+
+// Express app set up:
+const app = express()
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use('/', router)
+app.use(errorHandlers.notFound)
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(errorHandlers.developmentErrors)
 }
 
-const mainSafe = catchErrors(main)
+app.use(errorHandlers.productionErrors)
 
-mainSafe()
-
-// logger.info(`[index.js] ended script`)
+// Start the app:
+app.set('port', process.env.PORT || 8000)
+const server = app.listen(app.get('port'), () => {
+  logger.info(`[ index.js ] App running on port ${server.address().port}`)
+})
