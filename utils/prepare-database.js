@@ -109,20 +109,57 @@ async function createRelUserBadgeTable () {
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS rel_user_badge
     (
-      id            INT AUTO_INCREMENT PRIMARY KEY,
-      user_id       INT,
-      badge_id      INT,
-      granted_by    INT,
+      user_id       INT NOT NULL,
+      badge_id      INT NOT NULL,
+      granted_by    INT NOT NULL,
       message       TEXT,
-      create_date   DATETIME DEFAULT Now()
+      create_date   DATETIME DEFAULT Now(),
+      PRIMARY KEY (user_id, badge_id)
     )
     engine=innodb`
   )
-  /*
-  rel_tag_team')
-  rel_tag_badge')
-  rel_tag_user')
-  */
+}
+
+async function createRelTagUserTable () {
+  logger.info(`[ fn:createRelTagUserTable() ] generating rel_tag_user table`)
+  await connection.execute(
+    `CREATE TABLE IF NOT EXISTS rel_tag_user
+    (
+      user_id       INT NOT NULL,
+      tag_id        INT NOT NULL,
+      create_date   DATETIME DEFAULT Now(),
+      PRIMARY KEY (user_id, tag_id)
+    )
+    engine=innodb`
+  )
+}
+
+async function createRelTagBadgeTable () {
+  logger.info(`[ fn:createRelTagBadgeTable() ] generating rel_tag_badge table`)
+  await connection.execute(
+    `CREATE TABLE IF NOT EXISTS rel_tag_badge
+    (
+      tag_id        INT NOT NULL,
+      badge_id      INT NOT NULL,
+      create_date   DATETIME DEFAULT Now(),
+      PRIMARY KEY (tag_id, badge_id)
+    )
+    engine=innodb`
+  )
+}
+
+async function createRelTagTeamTable () {
+  logger.info(`[ fn:createRelTagTeamTable() ] generating rel_tag_team table`)
+  await connection.execute(
+    `CREATE TABLE IF NOT EXISTS rel_tag_team
+    (
+      tag_id        INT NOT NULL,
+      team_id       INT NOT NULL,
+      create_date   DATETIME DEFAULT Now(),
+      PRIMARY KEY (tag_id, team_id)
+    )
+    engine=innodb`
+  )
 }
 
 async function addConstraints () {
@@ -150,10 +187,45 @@ async function addConstraints () {
       ADD CONSTRAINT fk_badge_id FOREIGN KEY (badge_id)
       REFERENCES badge(id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-      ADD CONSTRAINT fk_granted_by FOREIGN KEY (granted_by)
+        ON UPDATE CASCADE`
+      /* Don't know why mysql database fails on trying to add this third constraint :S
+      ,ADD CONSTRAINT fk_granted_by FOREIGN KEY (granted_by)
       REFERENCES user(id)
         ON DELETE SET NULL
+        ON UPDATE CASCADE
+      */
+  )
+  await connection.execute(
+    `ALTER TABLE rel_tag_user
+      ADD CONSTRAINT fk_tag_user_user_id FOREIGN KEY (user_id)
+      REFERENCES user(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+      ADD CONSTRAINT fk_tag_user_tag_id FOREIGN KEY (tag_id)
+      REFERENCES tag(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE`
+  )
+  await connection.execute(
+    `ALTER TABLE rel_tag_badge
+      ADD CONSTRAINT fk_tag_badge_tag_id FOREIGN KEY (tag_id)
+      REFERENCES tag(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+      ADD CONSTRAINT fk_tag_badge_badge_id FOREIGN KEY (badge_id)
+      REFERENCES badge(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE`
+  )
+  await connection.execute(
+    `ALTER TABLE rel_tag_team
+      ADD CONSTRAINT fk_tag_team_tag_id FOREIGN KEY (tag_id)
+      REFERENCES tag(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+      ADD CONSTRAINT fk_tag_team_team_id FOREIGN KEY (team_id)
+      REFERENCES team(id)
+        ON DELETE CASCADE
         ON UPDATE CASCADE`
   )
 }
@@ -162,11 +234,17 @@ async function removeConstraints () {
   logger.info(`[ fn:removeConstraints() ] removing table's constraints`)
   let rows;
   [rows] = await connection.execute('SHOW TABLES LIKE "user"')
-  if (rows.length) await connection.execute(`ALTER TABLE user DROP FOREIGN KEY fk_team_id`);
+  if (rows && rows.length) await connection.execute(`ALTER TABLE user DROP FOREIGN KEY fk_team_id`);
   [rows] = await connection.execute('SHOW TABLES LIKE "team"')
-  if (rows.length) await connection.execute(`ALTER TABLE team DROP FOREIGN KEY fk_admin_id`);
+  if (rows && rows.length) await connection.execute(`ALTER TABLE team DROP FOREIGN KEY fk_admin_id`);
   [rows] = await connection.execute('SHOW TABLES LIKE "rel_user_badge"')
-  if (rows.length) await connection.execute(`ALTER TABLE rel_user_badge DROP FOREIGN KEY fk_user_id, DROP FOREIGN KEY fk_badge_id, DROP FOREIGN KEY fk_granted_by`)
+  if (rows && rows.length) await connection.execute(`ALTER TABLE rel_user_badge DROP FOREIGN KEY fk_user_id, DROP FOREIGN KEY fk_badge_id`/*, DROP FOREIGN KEY fk_granted_by */);
+  [rows] = await connection.execute('SHOW TABLES LIKE "rel_tag_user"')
+  if (rows && rows.length) await connection.execute(`ALTER TABLE rel_tag_user DROP FOREIGN KEY fk_tag_user_user_id, DROP FOREIGN KEY fk_tag_user_tag_id`);
+  [rows] = await connection.execute('SHOW TABLES LIKE "rel_tag_badge"')
+  if (rows && rows.length) await connection.execute(`ALTER TABLE rel_tag_badge DROP FOREIGN KEY fk_tag_badge_tag_id, DROP FOREIGN KEY fk_tag_badge_badge_id`);
+  [rows] = await connection.execute('SHOW TABLES LIKE "rel_tag_team"')
+  if (rows && rows.length) await connection.execute(`ALTER TABLE rel_tag_team DROP FOREIGN KEY fk_tag_team_tag_id, DROP FOREIGN KEY fk_tag_team_team_id`)
 }
 
 async function populateDev () {
@@ -179,6 +257,9 @@ async function populateDev () {
   await createBadgeTable()
   await createTagTable()
   await createRelUserBadgeTable()
+  await createRelTagUserTable()
+  await createRelTagBadgeTable()
+  await createRelTagTeamTable()
 
   // Add constraints:
   await addConstraints()
