@@ -9,7 +9,7 @@
     "lint": "standard",
     "validate": "npm ls",
     "format": "standard --fix",
-    "dev": "nodemon --exec \"npm run format && npm run test\""
+    "dev": "nodemon --exec \"npm run format && npm run test && node index.js\""
   },
   "repository": {
     "type": "git",
