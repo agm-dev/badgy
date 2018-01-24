@@ -35,7 +35,7 @@ async function createUserTable () {
     `CREATE TABLE IF NOT EXISTS user
     (
       id                           INT auto_increment PRIMARY KEY,
-      public_id                    CHAR(40) NOT NULL UNIQUE,
+      public_id                    CHAR(36) NOT NULL UNIQUE,
       name                         VARCHAR(30) NOT NULL UNIQUE,
       email                        VARCHAR(50) NOT NULL UNIQUE,
       hash                         CHAR(128) NOT NULL,
@@ -44,11 +44,12 @@ async function createUserTable () {
       activation_token             CHAR(100),
       reset_password_token         CHAR(100),
       reset_password_token_expires DATETIME,
+      request_token                VARCHAR(50) NOT NULL,
       login_fails                  INT(2) DEFAULT 0,
       activation_date              DATETIME,
       last_login_date              DATETIME,
       create_date                  DATETIME DEFAULT Now(),
-      update_date                  DATETIME
+      update_date                  DATETIME DEFAULT Now()
     )
     engine=innodb`
   )
@@ -60,13 +61,13 @@ async function createTeamTable () {
     `CREATE TABLE IF NOT EXISTS team
     (
       id           INT AUTO_INCREMENT PRIMARY KEY,
-      public_id    CHAR(40) NOT NULL UNIQUE,
+      public_id    CHAR(36) NOT NULL UNIQUE,
       name         VARCHAR(30) NOT NULL UNIQUE,
       description  TEXT,
       image        VARCHAR(200),
       admin        INT,
       create_date  DATETIME DEFAULT Now(),
-      update_date  DATETIME
+      update_date  DATETIME DEFAULT Now()
     )
     engine=innodb`
   )
@@ -78,14 +79,14 @@ async function createBadgeTable () {
     `CREATE TABLE IF NOT EXISTS badge
     (
       id            INT AUTO_INCREMENT PRIMARY KEY,
-      public_id     CHAR(40) NOT NULL UNIQUE,
+      public_id     CHAR(36) NOT NULL UNIQUE,
       name          VARCHAR(30) NOT NULL UNIQUE,
       description   TEXT,
       value         INT(4) DEFAULT 0,
       image         VARCHAR(200),
       validated     TINYINT(1) DEFAULT 0,
       create_date   DATETIME DEFAULT Now(),
-      update_date   DATETIME
+      update_date   DATETIME DEFAULT Now()
     )
     engine=innodb`
   )
